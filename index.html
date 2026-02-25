@@ -71,8 +71,6 @@
             font-size: 0.8rem;
         }
 
-        .location-tag { color: var(--amber); margin-left: 15px; font-weight: 400; opacity: 0.7; text-transform: uppercase; }
-
         main {
             flex: 1;
             padding: 40px;
@@ -99,7 +97,7 @@
         .label { font-size: 0.6rem; color: var(--emerald-bright); text-transform: uppercase; margin-bottom: 5px; }
         .value { font-size: 0.9rem; color: #fff; font-family: monospace; }
 
-        /* --- GAME CARDS (BLUR FOCUS) --- */
+        /* --- GAME CARDS --- */
         h2 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; color: var(--emerald-bright); text-transform: uppercase; }
         .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 30px; }
 
@@ -122,13 +120,11 @@
             background-size: cover;
             background-position: center;
             z-index: 1;
-            transition: 0.3s ease;
         }
 
         .card-info {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            /* Removed the dark background to keep image visible */
             background: transparent; 
             display: flex;
             align-items: center;
@@ -136,31 +132,66 @@
             opacity: 0;
             transition: 0.3s;
             z-index: 2;
-            /* The Blur Effect */
             backdrop-filter: blur(12px); 
             transform: translateZ(25px);
         }
 
         .game-card:hover { border-color: var(--amber); box-shadow: 0 0 20px var(--amber-glow); }
         .game-card:hover .card-info { opacity: 1; }
+        .card-info h3 { font-size: 0.9rem; color: #fff; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,1); }
 
-        .card-info h3 { 
-            font-size: 0.9rem; 
-            color: #fff; 
-            margin: 0; 
-            text-align: center; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            /* Added text shadow to make it pop over the blurred image */
-            text-shadow: 0 2px 10px rgba(0,0,0,1);
+        /* --- LANDING PAGE / LAUNCHER OVERLAY --- */
+        #launcher-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* --- UI OVERLAYS --- */
+        .launch-container {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .preview-window {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .btn-row { display: flex; gap: 20px; justify-content: center; }
+
+        .launch-btn {
+            padding: 12px 30px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .primary { background: var(--amber); color: #000; border: none; }
+        .primary:hover { background: #fff; transform: translateY(-2px); }
+
+        .secondary { background: transparent; color: #fff; border: 1px solid #555; }
+        .secondary:hover { border-color: #fff; }
+
         .page-content { display: none; }
         .page-content.active { display: block; }
-        #game-view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 999; }
-        #close-btn { position: absolute; top: 20px; right: 20px; background: #000; border: 1px solid var(--amber); color: #fff; padding: 8px 15px; cursor: pointer; z-index: 1000; }
-        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
@@ -172,7 +203,7 @@
     </aside>
 
     <div class="app-container">
-        <header>MILES_VAULT <span id="header-loc" class="location-tag">// MAIN</span></header>
+        <header>MILES_VAULT</header>
 
         <main>
             <div class="status-row">
@@ -182,34 +213,32 @@
             </div>
 
             <section id="main-page" class="page-content active">
-                <h2>AVAILABLE ASSETS</h2>
+                <h2>COLLECTION</h2>
                 <div class="game-grid">
                     
-                    <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)" onclick="launchGame()">
+                    <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)" onclick="openLauncher('Eaglercraft 1.8', 'Game%20Code.xml')">
                         <div class="card-img" style="background-image: url('Minecraft%20photo.png');"></div>
                         <div class="card-info">
                             <h3>Eaglercraft 1.8</h3>
                         </div>
                     </div>
 
-                    <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)">
-                        <div class="card-img" style="background-color: #0f172a;"></div>
-                        <div class="card-info">
-                            <h3>Add New Asset</h3>
-                        </div>
-                    </div>
-
                 </div>
             </section>
-
-            <section id="library" class="page-content"><h2>LIBRARY</h2></section>
-            <section id="settings" class="page-content"><h2>SETTINGS</h2></section>
         </main>
     </div>
 
-    <div id="game-view">
-        <button id="close-btn" onclick="killGame()">CLOSE GAME</button>
-        <iframe id="gameFrame" allowfullscreen></iframe>
+    <div id="launcher-overlay">
+        <div class="launch-container">
+            <h1 id="game-title" style="letter-spacing: 4px; color: var(--amber);">GAME TITLE</h1>
+            <div class="preview-window">
+                <iframe id="preview-frame"></iframe>
+            </div>
+            <div class="btn-row">
+                <button class="launch-btn primary" onclick="goFullscreen()">Go Fullscreen</button>
+                <button class="launch-btn secondary" onclick="closeLauncher()">Exit to Vault</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -229,34 +258,37 @@
 
         function showPage(pageId, pageName) {
             document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            document.getElementById('header-loc').innerText = `// ${pageName.toUpperCase()}`;
+        }
+
+        // LAUNCHER LOGIC
+        async function openLauncher(title, file) {
+            document.getElementById('game-title').innerText = title;
+            document.getElementById('launcher-overlay').style.display = 'flex';
+            
+            const frame = document.getElementById('preview-frame');
+            try {
+                const response = await fetch(file);
+                const text = await response.text();
+                const doc = frame.contentDocument || frame.contentWindow.document;
+                doc.open(); doc.write(text); doc.close();
+            } catch (e) { alert("File not found."); }
+        }
+
+        function closeLauncher() {
+            document.getElementById('launcher-overlay').style.display = 'none';
+            document.getElementById('preview-frame').src = "";
+        }
+
+        function goFullscreen() {
+            const frame = document.getElementById('preview-frame');
+            if (frame.requestFullscreen) frame.requestFullscreen();
+            else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+            else if (frame.msRequestFullscreen) frame.msRequestFullscreen();
         }
 
         window.onkeydown = (e) => { if(e.key === pKey) window.location.href = pUrl; };
-
-        async function launchGame() {
-            const view = document.getElementById('game-view');
-            const frame = document.getElementById('gameFrame');
-            try {
-                const response = await fetch('Game%20Code.xml');
-                const text = await response.text();
-                view.style.display = 'block';
-                const doc = frame.contentDocument || frame.contentWindow.document;
-                doc.open(); doc.write(text); doc.close();
-            } catch (e) { alert("XML File Missing."); }
-        }
-
-        function killGame() {
-            document.getElementById('game-view').style.display = 'none';
-            document.getElementById('gameFrame').src = '';
-        }
-
-        setInterval(() => {
-            document.getElementById('ping').innerText = (Math.floor(Math.random() * 6) + 12) + 'ms';
-        }, 3000);
+        setInterval(() => { document.getElementById('ping').innerText = (Math.floor(Math.random() * 6) + 12) + 'ms'; }, 3000);
     </script>
 </body>
 </html>
