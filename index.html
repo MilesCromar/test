@@ -7,12 +7,13 @@
     <style>
         :root {
             --emerald: #064e40;
-            --emerald-bright: #0d9488;
+            --emerald-bright: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.2);
             --amber: #f59e0b;
             --amber-glow: rgba(245, 158, 11, 0.4);
             --dark-bg: #020617;
-            --glass: rgba(0, 0, 0, 0.7);
-            --border: rgba(13, 148, 136, 0.4);
+            --glass: rgba(6, 78, 64, 0.3);
+            --border: rgba(16, 185, 129, 0.4);
         }
 
         body {
@@ -48,7 +49,7 @@
             font-weight: 700;
         }
 
-        .nav-item:hover { background: rgba(13, 148, 136, 0.05); color: #fff; }
+        .nav-item:hover { background: var(--emerald-glow); color: #fff; }
         .nav-item.active { color: var(--amber); border-left: 3px solid var(--amber); background: rgba(245, 158, 11, 0.05); }
 
         /* --- MAIN CONTENT --- */
@@ -71,11 +72,13 @@
             font-size: 0.8rem;
         }
 
+        .location-tag { color: var(--amber); margin-left: 15px; font-weight: 400; opacity: 0.7; text-transform: uppercase; }
+
         main {
             flex: 1;
             padding: 40px;
             overflow-y: auto;
-            background: radial-gradient(circle at center, #062d27 0%, #020617 100%);
+            background: radial-gradient(circle at center, #063d33 0%, #020617 100%);
         }
 
         /* --- STATUS BARS --- */
@@ -92,6 +95,7 @@
             padding: 15px 20px;
             border-radius: 4px;
             backdrop-filter: blur(10px);
+            box-shadow: inset 0 0 15px var(--emerald-glow);
         }
 
         .label { font-size: 0.6rem; color: var(--emerald-bright); text-transform: uppercase; margin-bottom: 5px; }
@@ -140,55 +144,61 @@
         .game-card:hover .card-info { opacity: 1; }
         .card-info h3 { font-size: 0.9rem; color: #fff; text-transform: uppercase; text-shadow: 0 2px 10px rgba(0,0,0,1); }
 
-        /* --- LANDING PAGE / LAUNCHER OVERLAY --- */
+        /* --- ENHANCED LAUNCHER OVERLAY --- */
         #launcher-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: radial-gradient(circle at center, rgba(6, 78, 64, 0.95), #000);
             z-index: 1000;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(30px);
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        .launch-container {
-            width: 80%;
-            max-width: 800px;
-            text-align: center;
+        .launch-container { 
+            width: 85%; 
+            max-width: 900px; 
+            text-align: center; 
+            background: rgba(0,0,0,0.4);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.1);
         }
 
-        .preview-window {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin: 20px 0;
-            overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        .preview-window { 
+            width: 100%; 
+            aspect-ratio: 16 / 9; 
+            background: #000; 
+            border: 2px solid var(--emerald-bright); 
+            border-radius: 12px; 
+            margin: 25px 0; 
+            overflow: hidden; 
+            position: relative;
+            box-shadow: 0 0 30px var(--emerald-glow);
         }
+
+        .preview-window::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--emerald-bright);
+            opacity: 0.3;
+            animation: scan 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
 
         iframe { width: 100%; height: 100%; border: none; }
-
-        .btn-row { display: flex; gap: 20px; justify-content: center; }
-
-        .launch-btn {
-            padding: 12px 30px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 800;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: 0.3s;
-        }
-
-        .primary { background: var(--amber); color: #000; border: none; }
-        .primary:hover { background: #fff; transform: translateY(-2px); }
-
-        .secondary { background: transparent; color: #fff; border: 1px solid #555; }
-        .secondary:hover { border-color: #fff; }
+        .btn-row { display: flex; gap: 20px; justify-content: center; margin-top: 10px; }
+        .launch-btn { padding: 14px 40px; font-size: 0.75rem; text-transform: uppercase; font-weight: 800; cursor: pointer; border-radius: 6px; transition: 0.3s; letter-spacing: 2px; }
+        .primary { background: var(--amber); color: #000; border: none; box-shadow: 0 0 15px var(--amber-glow); }
+        .primary:hover { background: #fff; transform: scale(1.05); }
+        .secondary { background: transparent; color: var(--emerald-bright); border: 1px solid var(--emerald-bright); }
+        .secondary:hover { background: var(--emerald-glow); color: #fff; }
 
         .page-content { display: none; }
         .page-content.active { display: block; }
@@ -197,13 +207,13 @@
 <body>
 
     <aside>
-        <div class="nav-item active" onclick="showPage('main-page', 'Main')">Main</div>
-        <div class="nav-item" onclick="showPage('library', 'Library')">Library</div>
-        <div class="nav-item" onclick="showPage('settings', 'Settings')">Settings</div>
+        <div class="nav-item active" onclick="showPage('main-page', 'Main', this)">Main</div>
+        <div class="nav-item" onclick="showPage('library', 'Library', this)">Library</div>
+        <div class="nav-item" onclick="showPage('settings', 'Settings', this)">Settings</div>
     </aside>
 
     <div class="app-container">
-        <header>MILES_VAULT</header>
+        <header>MILES_VAULT <span id="header-loc" class="location-tag">// MAIN</span></header>
 
         <main>
             <div class="status-row">
@@ -213,16 +223,29 @@
             </div>
 
             <section id="main-page" class="page-content active">
-                <h2>COLLECTION</h2>
+                <h2>AVAILABLE ASSETS</h2>
                 <div class="game-grid">
-                    
                     <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)" onclick="openLauncher('Eaglercraft 1.8', 'Game%20Code.xml')">
                         <div class="card-img" style="background-image: url('Minecraft%20photo.png');"></div>
-                        <div class="card-info">
-                            <h3>Eaglercraft 1.8</h3>
-                        </div>
+                        <div class="card-info"><h3>Eaglercraft 1.8</h3></div>
                     </div>
+                </div>
+            </section>
 
+            <section id="library" class="page-content">
+                <h2>ARCHIVED & PENDING</h2>
+                <div class="game-grid">
+                    <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)">
+                        <div class="card-img" style="background-color: #0f172a;"></div>
+                        <div class="card-info"><h3>Initialize New Link</h3></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="page-content">
+                <h2>SETTINGS</h2>
+                <div class="status-box" style="max-width: 400px;">
+                    <div class="label">Panic Key</div><div class="value">ESCAPE</div>
                 </div>
             </section>
         </main>
@@ -230,13 +253,12 @@
 
     <div id="launcher-overlay">
         <div class="launch-container">
-            <h1 id="game-title" style="letter-spacing: 4px; color: var(--amber);">GAME TITLE</h1>
-            <div class="preview-window">
-                <iframe id="preview-frame"></iframe>
-            </div>
+            <h1 id="game-title" style="letter-spacing: 8px; color: #fff; margin: 0;">GAME TITLE</h1>
+            <p style="color: var(--emerald-bright); font-size: 0.6rem; letter-spacing: 3px; margin-top: 10px;">INITIALIZING SECURE SESSION...</p>
+            <div class="preview-window"><iframe id="preview-frame"></iframe></div>
             <div class="btn-row">
-                <button class="launch-btn primary" onclick="goFullscreen()">Go Fullscreen</button>
-                <button class="launch-btn secondary" onclick="closeLauncher()">Exit to Vault</button>
+                <button class="launch-btn primary" onclick="goFullscreen()">Initialize Fullscreen</button>
+                <button class="launch-btn secondary" onclick="closeLauncher()">Terminate Link</button>
             </div>
         </div>
     </div>
@@ -245,46 +267,45 @@
         let pKey = "Escape";
         let pUrl = "https://www.google.com";
 
+        function showPage(pageId, pageName, element) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            element.classList.add('active');
+            document.getElementById('header-loc').innerText = `// ${pageName.toUpperCase()}`;
+        }
+
         function repel(e, card) {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             card.style.transform = `perspective(1000px) rotateX(${(rect.height/2 - y) / 7}deg) rotateY(${(x - rect.width/2) / 7}deg) scale(1.03)`;
         }
+        function resetCard(card) { card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`; }
 
-        function resetCard(card) {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
-        }
-
-        function showPage(pageId, pageName) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-        }
-
-        // LAUNCHER LOGIC
         async function openLauncher(title, file) {
             document.getElementById('game-title').innerText = title;
             document.getElementById('launcher-overlay').style.display = 'flex';
-            
             const frame = document.getElementById('preview-frame');
+            frame.src = "about:blank"; 
             try {
                 const response = await fetch(file);
                 const text = await response.text();
                 const doc = frame.contentDocument || frame.contentWindow.document;
                 doc.open(); doc.write(text); doc.close();
-            } catch (e) { alert("File not found."); }
+            } catch (e) { console.error("Load failed"); }
         }
 
         function closeLauncher() {
+            const frame = document.getElementById('preview-frame');
+            frame.src = "about:blank"; 
             document.getElementById('launcher-overlay').style.display = 'none';
-            document.getElementById('preview-frame').src = "";
         }
 
         function goFullscreen() {
             const frame = document.getElementById('preview-frame');
             if (frame.requestFullscreen) frame.requestFullscreen();
             else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
-            else if (frame.msRequestFullscreen) frame.msRequestFullscreen();
         }
 
         window.onkeydown = (e) => { if(e.key === pKey) window.location.href = pUrl; };
