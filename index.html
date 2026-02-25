@@ -6,11 +6,14 @@
     <title>VAULT | Miles Cromar</title>
     <style>
         :root {
-            --maroon: #800000;
-            --maroon-glow: rgba(128, 0, 0, 0.4);
-            --dark-bg: #050507;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(128, 0, 0, 0.3);
+            /* COLORS FROM YOUR REF IMAGE */
+            --emerald: #064e40;
+            --emerald-bright: #0d9488;
+            --amber: #f59e0b;
+            --amber-glow: rgba(245, 158, 11, 0.4);
+            --dark-bg: #020617; /* Deepest teal-black */
+            --glass: rgba(6, 78, 64, 0.15);
+            --border: rgba(13, 148, 136, 0.3);
         }
 
         body {
@@ -26,7 +29,7 @@
 
         header {
             height: 50px;
-            background: #0a0a0c;
+            background: #010409;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -36,13 +39,14 @@
             font-size: 0.8rem;
         }
 
-        .home-tag { color: var(--maroon); margin-left: 15px; font-weight: 400; opacity: 0.7; }
+        .home-tag { color: var(--amber); margin-left: 15px; font-weight: 400; opacity: 0.8; }
 
         main {
             flex: 1;
             padding: 40px;
             overflow-y: auto;
-            background: radial-gradient(circle at center, #1a0000 0%, #050507 85%);
+            /* Radial gradient matching the image depth */
+            background: radial-gradient(circle at center, #062d27 0%, #020617 100%);
         }
 
         .status-row {
@@ -55,34 +59,35 @@
         .status-box {
             background: var(--glass);
             border: 1px solid var(--border);
+            border-left: 3px solid var(--amber); /* Amber accent like the image curves */
             padding: 15px 20px;
             border-radius: 4px;
             position: relative;
         }
 
-        .label { font-size: 0.6rem; color: var(--maroon); text-transform: uppercase; margin-bottom: 5px; }
+        .label { font-size: 0.6rem; color: var(--emerald-bright); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
         .value { font-size: 0.9rem; color: #fff; font-family: monospace; }
 
         .panic-ui {
             display: none;
             position: absolute;
-            top: 100%; left: -1px; width: calc(100% + 2px);
-            background: #0a0000; border: 1px solid var(--maroon);
+            top: 105%; left: -1px; width: calc(100% + 2px);
+            background: #010409; border: 1px solid var(--amber);
             flex-direction: column; gap: 8px; padding: 12px;
-            z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,1);
+            z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         .p-btn {
-            background: transparent; border: 1px solid var(--maroon);
-            color: var(--maroon); font-size: 0.6rem; padding: 6px;
+            background: transparent; border: 1px solid var(--emerald-bright);
+            color: var(--emerald-bright); font-size: 0.6rem; padding: 6px;
             cursor: pointer; text-transform: uppercase;
         }
-        .p-btn:hover { background: var(--maroon); color: #fff; }
+        .p-btn:hover { background: var(--emerald-bright); color: #fff; }
         .p-input {
-            background: #000; border: 1px solid var(--maroon);
+            background: #000; border: 1px solid var(--amber);
             color: #fff; font-size: 0.7rem; padding: 6px; outline: none; display: none;
         }
 
-        h2 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; opacity: 0.8; }
+        h2 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; color: var(--emerald-bright); }
         
         .game-grid {
             display: grid;
@@ -90,7 +95,7 @@
             gap: 30px;
         }
 
-        /* REPEL CARDS */
+        /* REPEL CARDS - EMERALD & AMBER */
         .game-card {
             background: var(--glass);
             border: 1px solid var(--border);
@@ -102,7 +107,6 @@
             border-radius: 8px;
             cursor: pointer;
             position: relative;
-            /* Critical for Tilt */
             transform-style: preserve-3d;
             perspective: 1000px;
             transition: transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s;
@@ -110,8 +114,9 @@
         }
 
         .game-card:hover {
-            border-color: var(--maroon);
-            box-shadow: 0 0 20px var(--maroon-glow);
+            border-color: var(--amber);
+            box-shadow: 0 0 25px var(--amber-glow);
+            background: rgba(6, 78, 64, 0.3);
         }
 
         .icon { font-size: 2.5rem; margin-bottom: 10px; pointer-events: none; }
@@ -126,9 +131,10 @@
 
         #close-btn {
             position: absolute; top: 20px; right: 20px;
-            background: rgba(0,0,0,0.5); border: 1px solid var(--maroon);
-            color: var(--maroon); padding: 8px 15px; cursor: pointer; z-index: 1000;
+            background: rgba(0,0,0,0.7); border: 1px solid var(--amber);
+            color: var(--amber); padding: 8px 15px; cursor: pointer; z-index: 1000;
         }
+        #close-btn:hover { background: var(--amber); color: #000; font-weight: bold; }
 
         iframe { width: 100%; height: 100%; border: none; }
     </style>
@@ -136,31 +142,31 @@
 <body>
 
     <header>
-        MILES_VAULT <span class="home-tag">// HOME_DIR</span>
+        MILES_VAULT <span class="home-tag">// EMERALD_NODE</span>
     </header>
 
     <main>
         <div class="status-row">
             <div class="status-box">
-                <div class="label">Network Node</div>
-                <div class="value">ACTIVE_SECURE</div>
+                <div class="label">System State</div>
+                <div class="value">ENCRYPTED_IDLE</div>
             </div>
             <div class="status-box">
-                <div class="label">System Ping</div>
+                <div class="label">Sync Latency</div>
                 <div class="value" id="ping">12ms</div>
             </div>
             <div class="status-box" id="panic-box" style="cursor: pointer;">
-                <div class="label">Panic_Key</div>
+                <div class="label">Override_Key</div>
                 <div class="value" id="p-display">[ESC] -> GOOGLE</div>
                 <div class="panic-ui" id="p-menu">
-                    <button class="p-btn" onclick="rebind()">Rebind Key</button>
-                    <button class="p-btn" onclick="showInput()">Change URL</button>
-                    <input type="text" id="p-input" class="p-input" placeholder="Enter URL...">
+                    <button class="p-btn" onclick="rebind()">Assign New Key</button>
+                    <button class="p-btn" onclick="showInput()">Update Redirect</button>
+                    <input type="text" id="p-input" class="p-input" placeholder="Secure URL...">
                 </div>
             </div>
         </div>
 
-        <h2>AVAILABLE_PROJECTS</h2>
+        <h2>ACTIVE_DATA_PACKETS</h2>
 
         <div class="game-grid">
             <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)" onclick="launchGame()">
@@ -175,7 +181,7 @@
     </main>
 
     <div id="game-view">
-        <button id="close-btn" onclick="killGame()">TERMINATE_SESSION</button>
+        <button id="close-btn" onclick="killGame()">ABORT_SESSION</button>
         <iframe id="gameFrame"></iframe>
     </div>
 
@@ -184,20 +190,14 @@
         let pUrl = "https://www.google.com";
         let listening = false;
 
-        // --- FIXED REPEL (Tilt) ---
         function repel(e, card) {
             const rect = card.getBoundingClientRect();
-            // Get mouse position relative to card center
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-
-            // Calculate rotation (Divide by 6-10 for intensity)
-            // Negative values create the "repel" (leaning away)
             const rotateX = (centerY - y) / 6; 
             const rotateY = (x - centerX) / 6;
-
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(0.98)`;
         }
 
@@ -205,7 +205,6 @@
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
         }
 
-        // --- PANIC ---
         const menu = document.getElementById('p-menu');
         const box = document.getElementById('panic-box');
         const input = document.getElementById('p-input');
@@ -217,7 +216,7 @@
 
         window.onclick = () => menu.style.display = 'none';
 
-        function rebind() { listening = true; document.getElementById('p-display').innerText = "LISTENING..."; }
+        function rebind() { listening = true; document.getElementById('p-display').innerText = "CALIBRATING..."; }
         function showInput() { input.style.display = 'block'; input.focus(); }
 
         input.onkeydown = (e) => {
@@ -238,7 +237,6 @@
             document.getElementById('p-display').innerText = `[${pKey.toUpperCase()}] -> ${host}`;
         }
 
-        // --- GAME ---
         async function launchGame() {
             const frame = document.getElementById('gameFrame');
             const view = document.getElementById('game-view');
@@ -247,10 +245,8 @@
                 const text = await response.text();
                 view.style.display = 'block';
                 const doc = frame.contentDocument || frame.contentWindow.document;
-                doc.open();
-                doc.write(text);
-                doc.close();
-            } catch (e) { alert("Game Code.xml not found."); }
+                doc.open(); doc.write(text); doc.close();
+            } catch (e) { alert("Data Packet Missing."); }
         }
 
         function killGame() {
@@ -259,7 +255,7 @@
         }
 
         setInterval(() => {
-            document.getElementById('ping').innerText = (Math.floor(Math.random() * 5) + 10) + 'ms';
+            document.getElementById('ping').innerText = (Math.floor(Math.random() * 5) + 8) + 'ms';
         }, 3000);
     </script>
 </body>
