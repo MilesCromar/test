@@ -6,13 +6,12 @@
     <title>VAULT | Miles Cromar</title>
     <style>
         :root {
-            /* COLORS FROM YOUR REF IMAGE */
             --emerald: #064e40;
             --emerald-bright: #0d9488;
             --amber: #f59e0b;
             --amber-glow: rgba(245, 158, 11, 0.4);
-            --dark-bg: #020617; /* Deepest teal-black */
-            --glass: rgba(6, 78, 64, 0.15);
+            --dark-bg: #020617;
+            --glass: rgba(255, 255, 255, 0.03);
             --border: rgba(13, 148, 136, 0.3);
         }
 
@@ -21,15 +20,56 @@
             font-family: 'Inter', 'Segoe UI', sans-serif;
             background-color: var(--dark-bg);
             color: #e2e8f0;
+            display: flex; /* Sidebar Layout */
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        aside {
+            width: 200px;
+            background: #010409;
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            padding: 30px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            padding: 15px 30px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--emerald-bright);
+            cursor: pointer;
+            transition: 0.3s;
+            border-left: 3px solid transparent;
+            font-weight: 700;
+        }
+
+        .nav-item:hover {
+            background: rgba(13, 148, 136, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            color: var(--amber);
+            border-left: 3px solid var(--amber);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .app-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
 
         header {
             height: 50px;
-            background: #010409;
+            background: #0a0a0c;
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -39,16 +79,16 @@
             font-size: 0.8rem;
         }
 
-        .home-tag { color: var(--amber); margin-left: 15px; font-weight: 400; opacity: 0.8; }
+        .home-tag { color: var(--amber); margin-left: 15px; font-weight: 400; opacity: 0.7; }
 
         main {
             flex: 1;
             padding: 40px;
             overflow-y: auto;
-            /* Radial gradient matching the image depth */
             background: radial-gradient(circle at center, #062d27 0%, #020617 100%);
         }
 
+        /* Status Row - Exact sizes from your original */
         .status-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -59,35 +99,16 @@
         .status-box {
             background: var(--glass);
             border: 1px solid var(--border);
-            border-left: 3px solid var(--amber); /* Amber accent like the image curves */
             padding: 15px 20px;
             border-radius: 4px;
             position: relative;
         }
 
-        .label { font-size: 0.6rem; color: var(--emerald-bright); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        .label { font-size: 0.6rem; color: var(--emerald-bright); text-transform: uppercase; margin-bottom: 5px; }
         .value { font-size: 0.9rem; color: #fff; font-family: monospace; }
 
-        .panic-ui {
-            display: none;
-            position: absolute;
-            top: 105%; left: -1px; width: calc(100% + 2px);
-            background: #010409; border: 1px solid var(--amber);
-            flex-direction: column; gap: 8px; padding: 12px;
-            z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        .p-btn {
-            background: transparent; border: 1px solid var(--emerald-bright);
-            color: var(--emerald-bright); font-size: 0.6rem; padding: 6px;
-            cursor: pointer; text-transform: uppercase;
-        }
-        .p-btn:hover { background: var(--emerald-bright); color: #fff; }
-        .p-input {
-            background: #000; border: 1px solid var(--amber);
-            color: #fff; font-size: 0.7rem; padding: 6px; outline: none; display: none;
-        }
-
-        h2 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; color: var(--emerald-bright); }
+        /* Game Grid */
+        h2 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; opacity: 0.8; }
         
         .game-grid {
             display: grid;
@@ -95,7 +116,7 @@
             gap: 30px;
         }
 
-        /* REPEL CARDS - EMERALD & AMBER */
+        /* Repel Cards */
         .game-card {
             background: var(--glass);
             border: 1px solid var(--border);
@@ -106,22 +127,35 @@
             justify-content: center;
             border-radius: 8px;
             cursor: pointer;
-            position: relative;
+            transition: transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s;
             transform-style: preserve-3d;
             perspective: 1000px;
-            transition: transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s;
             will-change: transform;
         }
 
         .game-card:hover {
             border-color: var(--amber);
-            box-shadow: 0 0 25px var(--amber-glow);
-            background: rgba(6, 78, 64, 0.3);
+            box-shadow: 0 0 20px var(--amber-glow);
         }
 
         .icon { font-size: 2.5rem; margin-bottom: 10px; pointer-events: none; }
         .game-card h3 { font-size: 0.9rem; margin: 0; color: white; pointer-events: none; }
 
+        /* Panic Logic (Inside Override Box) */
+        .panic-ui {
+            display: none;
+            position: absolute;
+            top: 100%; left: -1px; width: calc(100% + 2px);
+            background: #010409; border: 1px solid var(--amber);
+            flex-direction: column; gap: 8px; padding: 12px;
+            z-index: 200;
+        }
+        .p-btn {
+            background: transparent; border: 1px solid var(--amber);
+            color: var(--amber); font-size: 0.6rem; padding: 6px; cursor: pointer;
+        }
+
+        /* Game Overlay */
         #game-view {
             display: none;
             position: fixed;
@@ -132,57 +166,65 @@
         #close-btn {
             position: absolute; top: 20px; right: 20px;
             background: rgba(0,0,0,0.7); border: 1px solid var(--amber);
-            color: var(--amber); padding: 8px 15px; cursor: pointer; z-index: 1000;
+            color: #fff; padding: 8px 15px; cursor: pointer; z-index: 1000;
         }
-        #close-btn:hover { background: var(--amber); color: #000; font-weight: bold; }
 
         iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
-    <header>
-        MILES_VAULT <span class="home-tag">// EMERALD_NODE</span>
-    </header>
+    <aside>
+        <div class="nav-item active">Home</div>
+        <div class="nav-item">Library</div>
+        <div class="nav-item">Settings</div>
+    </aside>
 
-    <main>
-        <div class="status-row">
-            <div class="status-box">
-                <div class="label">System State</div>
-                <div class="value">ENCRYPTED_IDLE</div>
-            </div>
-            <div class="status-box">
-                <div class="label">Sync Latency</div>
-                <div class="value" id="ping">12ms</div>
-            </div>
-            <div class="status-box" id="panic-box" style="cursor: pointer;">
-                <div class="label">Override_Key</div>
-                <div class="value" id="p-display">[ESC] -> GOOGLE</div>
-                <div class="panic-ui" id="p-menu">
-                    <button class="p-btn" onclick="rebind()">Assign New Key</button>
-                    <button class="p-btn" onclick="showInput()">Update Redirect</button>
-                    <input type="text" id="p-input" class="p-input" placeholder="Secure URL...">
+    <div class="app-container">
+        <header>
+            MILES_VAULT <span class="home-tag">// EMERALD_CORE</span>
+        </header>
+
+        <main>
+            <div class="status-row">
+                <div class="status-box">
+                    <div class="label">Network Node</div>
+                    <div class="value">ACTIVE_SECURE</div>
+                </div>
+                <div class="status-box">
+                    <div class="label">System Ping</div>
+                    <div class="value" id="ping">12ms</div>
+                </div>
+                <div class="status-box" id="panic-box" style="cursor: pointer;">
+                    <div class="label">Override_Link</div>
+                    <div class="value" id="p-display">[ESC] -> GOOGLE</div>
+                    <div class="panic-ui" id="p-menu">
+                        <button class="p-btn" onclick="rebind()">Rebind Key</button>
+                        <button class="p-btn" onclick="showInput()">Update URL</button>
+                        <input type="text" id="p-input" style="display:none; width:100%; background:#000; color:#fff; border:1px solid var(--amber); font-size:0.7rem; padding:4px;" placeholder="URL...">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <h2>ACTIVE_DATA_PACKETS</h2>
+            <h2>AVAILABLE_PROJECTS</h2>
 
-        <div class="game-grid">
-            <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)" onclick="launchGame()">
-                <div class="icon">⛏️</div>
-                <h3>Eaglercraft 1.8</h3>
+            <div class="game-grid">
+                <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)" onclick="launchGame()">
+                    <div class="icon">⛏️</div>
+                    <h3>Eaglercraft 1.8</h3>
+                </div>
+
+                <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)">
+                    <div class="icon">🕹️</div>
+                    <h3>Project_B</h3>
+                </div>
             </div>
-            <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)">
-                <div class="icon">🕹️</div>
-                <h3>Project_B</h3>
-            </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <div id="game-view">
-        <button id="close-btn" onclick="killGame()">ABORT_SESSION</button>
-        <iframe id="gameFrame"></iframe>
+        <button id="close-btn" onclick="killGame()">TERMINATE_SESSION</button>
+        <iframe id="gameFrame" allowfullscreen="true"></iframe>
     </div>
 
     <script>
@@ -190,6 +232,7 @@
         let pUrl = "https://www.google.com";
         let listening = false;
 
+        // Repel Tilt Logic
         function repel(e, card) {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -205,24 +248,26 @@
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
         }
 
+        // Panic Menu Logic
         const menu = document.getElementById('p-menu');
         const box = document.getElementById('panic-box');
-        const input = document.getElementById('p-input');
-
         box.onclick = (e) => {
             e.stopPropagation();
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
         };
-
         window.onclick = () => menu.style.display = 'none';
 
-        function rebind() { listening = true; document.getElementById('p-display').innerText = "CALIBRATING..."; }
-        function showInput() { input.style.display = 'block'; input.focus(); }
+        function rebind() { listening = true; document.getElementById('p-display').innerText = "LISTENING..."; }
+        function showInput() { 
+            const inp = document.getElementById('p-input');
+            inp.style.display = 'block'; 
+            inp.focus(); 
+        }
 
-        input.onkeydown = (e) => {
+        document.getElementById('p-input').onkeydown = (e) => {
             if(e.key === 'Enter') {
-                pUrl = input.value.startsWith('http') ? input.value : 'https://' + input.value;
-                input.style.display = 'none';
+                pUrl = e.target.value.startsWith('http') ? e.target.value : 'https://' + e.target.value;
+                e.target.style.display = 'none';
                 updateP();
             }
         };
@@ -237,6 +282,7 @@
             document.getElementById('p-display').innerText = `[${pKey.toUpperCase()}] -> ${host}`;
         }
 
+        // Game Logic
         async function launchGame() {
             const frame = document.getElementById('gameFrame');
             const view = document.getElementById('game-view');
@@ -246,7 +292,7 @@
                 view.style.display = 'block';
                 const doc = frame.contentDocument || frame.contentWindow.document;
                 doc.open(); doc.write(text); doc.close();
-            } catch (e) { alert("Data Packet Missing."); }
+            } catch (e) { alert("Game Code.xml not found."); }
         }
 
         function killGame() {
@@ -255,7 +301,7 @@
         }
 
         setInterval(() => {
-            document.getElementById('ping').innerText = (Math.floor(Math.random() * 5) + 8) + 'ms';
+            document.getElementById('ping').innerText = (Math.floor(Math.random() * 5) + 10) + 'ms';
         }, 3000);
     </script>
 </body>
