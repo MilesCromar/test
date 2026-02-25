@@ -24,7 +24,6 @@
             overflow: hidden;
         }
 
-        /* Fixed Header */
         header {
             height: 50px;
             background: #0a0a0c;
@@ -39,7 +38,6 @@
 
         .home-tag { color: var(--maroon); margin-left: 15px; font-weight: 400; opacity: 0.7; }
 
-        /* Main Area with Vault Background */
         main {
             flex: 1;
             padding: 40px;
@@ -47,7 +45,6 @@
             background: radial-gradient(circle at center, #1a0000 0%, #050507 85%);
         }
 
-        /* Status Boxes - Keeping your grid/sizes */
         .status-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -64,9 +61,8 @@
         }
 
         .label { font-size: 0.6rem; color: var(--maroon); text-transform: uppercase; margin-bottom: 5px; }
-        .value { font-size: 0.9rem; color: #fff; font-family: monospace; text-shadow: 0 0 5px var(--maroon-glow); }
+        .value { font-size: 0.9rem; color: #fff; font-family: monospace; }
 
-        /* Panic Menu (Isolated Expansion) */
         .panic-ui {
             display: none;
             position: absolute;
@@ -86,7 +82,6 @@
             color: #fff; font-size: 0.7rem; padding: 6px; outline: none; display: none;
         }
 
-        /* Game Grid */
         h2 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; opacity: 0.8; }
         
         .game-grid {
@@ -95,7 +90,7 @@
             gap: 30px;
         }
 
-        /* Square "Repel" Cards */
+        /* REPEL CARDS */
         .game-card {
             background: var(--glass);
             border: 1px solid var(--border);
@@ -106,9 +101,12 @@
             justify-content: center;
             border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s;
+            position: relative;
+            /* Critical for Tilt */
             transform-style: preserve-3d;
             perspective: 1000px;
+            transition: transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s;
+            will-change: transform;
         }
 
         .game-card:hover {
@@ -116,10 +114,9 @@
             box-shadow: 0 0 20px var(--maroon-glow);
         }
 
-        .icon { font-size: 2.5rem; margin-bottom: 10px; }
-        .game-card h3 { font-size: 0.9rem; margin: 0; color: white; }
+        .icon { font-size: 2.5rem; margin-bottom: 10px; pointer-events: none; }
+        .game-card h3 { font-size: 0.9rem; margin: 0; color: white; pointer-events: none; }
 
-        /* Game Overlay */
         #game-view {
             display: none;
             position: fixed;
@@ -132,7 +129,6 @@
             background: rgba(0,0,0,0.5); border: 1px solid var(--maroon);
             color: var(--maroon); padding: 8px 15px; cursor: pointer; z-index: 1000;
         }
-        #close-btn:hover { background: var(--maroon); color: #fff; }
 
         iframe { width: 100%; height: 100%; border: none; }
     </style>
@@ -171,7 +167,6 @@
                 <div class="icon">⛏️</div>
                 <h3>Eaglercraft 1.8</h3>
             </div>
-
             <div class="game-card" onmousemove="repel(event, this)" onmouseleave="resetCard(this)">
                 <div class="icon">🕹️</div>
                 <h3>Project_B</h3>
@@ -181,7 +176,7 @@
 
     <div id="game-view">
         <button id="close-btn" onclick="killGame()">TERMINATE_SESSION</button>
-        <iframe id="gameFrame" allowfullscreen="true"></iframe>
+        <iframe id="gameFrame"></iframe>
     </div>
 
     <script>
@@ -189,15 +184,20 @@
         let pUrl = "https://www.google.com";
         let listening = false;
 
-        // --- REPEL EFFECT (Your Logic) ---
+        // --- FIXED REPEL (Tilt) ---
         function repel(e, card) {
             const rect = card.getBoundingClientRect();
+            // Get mouse position relative to card center
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
+
+            // Calculate rotation (Divide by 6-10 for intensity)
+            // Negative values create the "repel" (leaning away)
             const rotateX = (centerY - y) / 6; 
             const rotateY = (x - centerX) / 6;
+
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(0.98)`;
         }
 
@@ -205,7 +205,7 @@
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
         }
 
-        // --- PANIC LOGIC ---
+        // --- PANIC ---
         const menu = document.getElementById('p-menu');
         const box = document.getElementById('panic-box');
         const input = document.getElementById('p-input');
@@ -213,7 +213,54 @@
         box.onclick = (e) => {
             e.stopPropagation();
             menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        };
+
+        window.onclick = () => menu.style.display = 'none';
+
+        function rebind() { listening = true; document.getElementById('p-display').innerText = "LISTENING..."; }
+        function showInput() { input.style.display = 'block'; input.focus(); }
+
+        input.onkeydown = (e) => {
+            if(e.key === 'Enter') {
+                pUrl = input.value.startsWith('http') ? input.value : 'https://' + input.value;
+                input.style.display = 'none';
+                updateP();
+            }
+        };
+
+        window.onkeydown = (e) => {
+            if(listening) { pKey = e.key; listening = false; updateP(); return; }
+            if(e.key === pKey) window.location.href = pUrl;
+        };
+
+        function updateP() {
+            let host = new URL(pUrl).hostname.toUpperCase();
+            document.getElementById('p-display').innerText = `[${pKey.toUpperCase()}] -> ${host}`;
         }
 
-        window.onclick =
-            
+        // --- GAME ---
+        async function launchGame() {
+            const frame = document.getElementById('gameFrame');
+            const view = document.getElementById('game-view');
+            try {
+                const response = await fetch('Game%20Code.xml');
+                const text = await response.text();
+                view.style.display = 'block';
+                const doc = frame.contentDocument || frame.contentWindow.document;
+                doc.open();
+                doc.write(text);
+                doc.close();
+            } catch (e) { alert("Game Code.xml not found."); }
+        }
+
+        function killGame() {
+            document.getElementById('game-view').style.display = 'none';
+            document.getElementById('gameFrame').src = '';
+        }
+
+        setInterval(() => {
+            document.getElementById('ping').innerText = (Math.floor(Math.random() * 5) + 10) + 'ms';
+        }, 3000);
+    </script>
+</body>
+</html>
