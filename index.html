@@ -102,23 +102,22 @@
         .page-content { display: none; }
         .page-content.active { display: block; }
 
-        /* Settings Visuals */
+        /* Settings UI */
         .settings-grid { display: flex; flex-direction: column; gap: 20px; max-width: 400px; }
-        .setting-item { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 4px; }
-        .setting-item h4 { margin: 0 0 10px 0; font-size: 0.7rem; color: var(--amber); text-transform: uppercase; }
+        .setting-item { background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 4px; }
+        .setting-item h4 { margin: 0 0 15px 0; font-size: 0.75rem; color: var(--amber); text-transform: uppercase; letter-spacing: 1px; }
         
         input {
             width: 100%; background: #000; border: 1px solid var(--emerald-bright);
-            color: #fff; padding: 10px; font-family: monospace; outline: none; box-sizing: border-box;
+            color: #fff; padding: 12px; font-family: monospace; outline: none; box-sizing: border-box;
         }
 
         .config-btn {
             margin-top: 10px; background: transparent; border: 1px solid var(--emerald-bright);
-            color: var(--emerald-bright); padding: 12px; cursor: pointer; width: 100%; text-transform: uppercase; 
-            font-size: 0.7rem; font-weight: bold; transition: all 0.2s;
+            color: var(--emerald-bright); padding: 14px; cursor: pointer; width: 100%; text-transform: uppercase; 
+            font-size: 0.75rem; font-weight: bold; transition: all 0.2s;
         }
 
-        /* NEW LISTENING STATE */
         .config-btn.listening {
             border-color: var(--amber);
             color: var(--amber);
@@ -132,8 +131,15 @@
             100% { opacity: 1; }
         }
 
+        /* UPDATED BIGGER KEY DISPLAY */
         .current-key-display {
-            margin-top: 8px; font-size: 0.6rem; color: var(--emerald-bright); opacity: 0.6;
+            margin-top: 15px; 
+            font-size: 1.1rem; 
+            color: var(--amber); 
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px var(--amber-glow);
+            font-family: monospace;
         }
 
         /* Projects */
@@ -194,7 +200,7 @@
 
             <section id="library" class="page-content">
                 <h2>LIBRARY</h2>
-                <p style="color: var(--emerald-bright); opacity: 0.6;">Library archive empty.</p>
+                <p style="color: var(--emerald-bright); opacity: 0.6;">No archives available.</p>
             </section>
 
             <section id="settings" class="page-content">
@@ -203,9 +209,9 @@
                     <div class="setting-item">
                         <h4>Panic Switch</h4>
                         <button class="config-btn" id="bind-btn" onclick="startRebind()">Set Trigger Key</button>
-                        <div id="active-key-text" class="current-key-display">Current Key: ESCAPE</div>
+                        <div id="active-key-text" class="current-key-display">KEY: ESCAPE</div>
                         
-                        <div style="margin-top: 20px;">
+                        <div style="margin-top: 30px;">
                             <label class="label">Emergency URL</label>
                             <input type="text" id="url-input" placeholder="https://google.com" onchange="updateUrl(this.value)">
                         </div>
@@ -245,7 +251,6 @@
             card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
         }
 
-        // --- IMPROVED PANIC KEY SETTING ---
         function startRebind() {
             listening = true;
             const btn = document.getElementById('bind-btn');
@@ -267,7 +272,7 @@
                 btn.innerText = "SET TRIGGER KEY";
                 btn.classList.remove('listening');
                 
-                document.getElementById('active-key-text').innerText = `Current Key: ${pKey.toUpperCase()}`;
+                document.getElementById('active-key-text').innerText = `KEY: ${pKey.toUpperCase()}`;
                 updateDisplay();
                 return;
             }
