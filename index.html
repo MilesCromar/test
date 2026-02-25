@@ -11,8 +11,8 @@
             --amber: #f59e0b;
             --amber-glow: rgba(245, 158, 11, 0.4);
             --dark-bg: #020617;
-            --glass: rgba(255, 255, 255, 0.03);
-            --border: rgba(13, 148, 136, 0.3);
+            --glass: rgba(0, 0, 0, 0.5); /* Darkened for better readability */
+            --border: rgba(13, 148, 136, 0.4);
         }
 
         body {
@@ -69,6 +69,7 @@
             font-weight: 900;
             letter-spacing: 2px;
             font-size: 0.8rem;
+            z-index: 10;
         }
 
         .location-tag { color: var(--amber); margin-left: 15px; font-weight: 400; opacity: 0.7; text-transform: uppercase; }
@@ -77,7 +78,11 @@
             flex: 1;
             padding: 40px;
             overflow-y: auto;
-            background: radial-gradient(circle at center, #062d27 0%, #020617 100%);
+            /* NEW BACKGROUND IMAGE APPLIED HERE */
+            background: linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.7)), 
+                        url('https://i.imgur.com/vHq05sM.png'); 
+            background-size: cover;
+            background-position: center;
         }
 
         /* Status Row */
@@ -93,6 +98,7 @@
             border: 1px solid var(--border);
             padding: 15px 20px;
             border-radius: 4px;
+            backdrop-filter: blur(5px);
         }
 
         .label { font-size: 0.6rem; color: var(--emerald-bright); text-transform: uppercase; margin-bottom: 5px; }
@@ -101,7 +107,7 @@
         .page-content { display: none; }
         .page-content.active { display: block; }
 
-        /* --- SQUARE GAME CARDS (NO ICONS) --- */
+        /* --- SQUARE GAME CARDS --- */
         h2 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; color: var(--emerald-bright); text-transform: uppercase; }
         .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; }
 
@@ -128,7 +134,7 @@
         .card-info {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.65); 
+            background: rgba(0, 0, 0, 0.75); 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -150,12 +156,11 @@
             padding: 0 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            font-weight: 700;
         }
 
         /* Settings UI */
         .settings-grid { display: flex; flex-direction: column; gap: 20px; max-width: 400px; }
-        .setting-item { background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 4px; }
+        .setting-item { background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 4px; backdrop-filter: blur(5px); }
         .current-key-display { margin-top: 15px; font-size: 1.1rem; color: var(--amber); font-weight: 800; text-shadow: 0 0 10px var(--amber-glow); }
         input { width: 100%; background: #000; border: 1px solid var(--emerald-bright); color: #fff; padding: 12px; font-family: monospace; outline: none; box-sizing: border-box; }
         .config-btn { margin-top: 10px; background: transparent; border: 1px solid var(--emerald-bright); color: var(--emerald-bright); padding: 14px; cursor: pointer; width: 100%; text-transform: uppercase; font-size: 0.75rem; font-weight: bold; }
@@ -199,16 +204,16 @@
                 <div class="game-grid">
                     
                     <div class="game-card" onclick="launchGame()">
-                        <div class="card-img" style="background-image: url('https://wallpaperaccess.com/full/1271168.jpg');"></div>
+                        <div class="card-img" style="background-image: url('https://i.imgur.com/u7q6Z0s.png');"></div>
                         <div class="card-info">
                             <h3>Eaglercraft 1.8</h3>
                         </div>
                     </div>
 
                     <div class="game-card">
-                        <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop');"></div>
+                        <div class="card-img" style="background-color: #111;"></div>
                         <div class="card-info">
-                            <h3>Coming Soon</h3>
+                            <h3>Slot Available</h3>
                         </div>
                     </div>
 
@@ -217,7 +222,7 @@
 
             <section id="library" class="page-content">
                 <h2>LIBRARY</h2>
-                <p style="color: var(--emerald-bright); opacity: 0.6;">No archives available.</p>
+                <p style="color: var(--emerald-bright);">Archives are currently empty.</p>
             </section>
 
             <section id="settings" class="page-content">
