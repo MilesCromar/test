@@ -19,124 +19,51 @@
         body { margin: 0; font-family: 'Inter', sans-serif; background: var(--dark-bg); color: #e2e8f0; display: flex; height: 100vh; overflow: hidden; }
 
         /* Sidebar */
-        aside { width: 200px; background: #010409; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 0; }
+        aside { width: 200px; background: #010409; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 0; z-index: 100; }
         .nav-item { padding: 15px 30px; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--emerald-bright); cursor: pointer; transition: 0.3s; border-left: 3px solid transparent; font-weight: 700; }
         .nav-item:hover { background: var(--emerald-glow); color: #fff; }
-        .nav-item.active { color: var(--amber); border-left: 3px solid var(--amber); }
+        .nav-item.active { color: var(--amber); border-left: 3px solid var(--amber); background: rgba(245, 158, 11, 0.05); }
 
         .app-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         header { height: 50px; background: #010409; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 30px; font-weight: 900; font-size: 0.8rem; }
         main { flex: 1; padding: 40px; overflow-y: auto; background: radial-gradient(circle at center, #063d33 0%, #020617 100%); }
 
-        /* Stats */
+        /* Stats Bars */
         .status-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 50px; }
-        .status-box { background: var(--glass); border: 1px solid var(--border); padding: 15px 20px; border-radius: 4px; backdrop-filter: blur(10px); }
-        .label { font-size: 0.6rem; color: var(--emerald-bright); text-transform: uppercase; }
+        .status-box { background: var(--glass); border: 1px solid var(--border); padding: 15px 20px; border-radius: 4px; backdrop-filter: blur(10px); box-shadow: inset 0 0 15px var(--emerald-glow); }
+        .label { font-size: 0.6rem; color: var(--emerald-bright); text-transform: uppercase; margin-bottom: 5px; }
         .value { font-size: 0.9rem; color: #fff; font-family: monospace; }
 
-        /* Cards */
+        /* Game Cards with Tilt Effect */
         h2 { font-size: 1rem; letter-spacing: 1px; margin-bottom: 25px; color: var(--emerald-bright); text-transform: uppercase; }
         .game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 30px; }
-        .game-card { background: #000; border: 1px solid var(--border); aspect-ratio: 1 / 1; border-radius: 8px; cursor: pointer; position: relative; overflow: hidden; transition: 0.3s; }
-        .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
-        .card-info { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; backdrop-filter: blur(12px); }
+        .game-card { 
+            background: #000; 
+            border: 1px solid var(--border); 
+            aspect-ratio: 1 / 1; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            position: relative; 
+            overflow: hidden; 
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.1s ease-out, border-color 0.3s, box-shadow 0.3s;
+        }
+        .card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; }
+        .card-info { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: flex; align-items: center; justify-content: center; 
+            opacity: 0; transition: 0.3s; backdrop-filter: blur(12px); 
+            z-index: 2; transform: translateZ(25px);
+        }
         .game-card:hover { border-color: var(--amber); box-shadow: 0 0 20px var(--amber-glow); }
         .game-card:hover .card-info { opacity: 1; }
-        .card-info h3 { font-size: 0.8rem; color: #fff; text-transform: uppercase; text-align: center; }
+        .card-info h3 { font-size: 0.8rem; color: #fff; text-transform: uppercase; text-align: center; text-shadow: 0 2px 10px #000; }
 
-        /* Launcher */
-        #launcher-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
-        .launch-container { width: 85%; max-width: 900px; text-align: center; }
-        .preview-window { width: 100%; aspect-ratio: 16 / 9; background: #000; border: 2px solid var(--emerald-bright); border-radius: 12px; margin: 25px 0; overflow: hidden; }
+        /* Game Launcher Landing Page */
+        #launcher-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(20px); }
+        .launch-container { width: 85%; max-width: 900px; text-align: center; background: rgba(0,0,0,0.4); padding: 40px; border-radius: 20px; border: 1px solid var(--border); }
+        .preview-window { width: 100%; aspect-ratio: 16 / 9; background: #000; border: 2px solid var(--emerald-bright); border-radius: 12px; margin: 25px 0; overflow: hidden; position: relative; }
         iframe { width: 100%; height: 100%; border: none; }
         .btn-row { display: flex; gap: 20px; justify-content: center; }
-        .launch-btn { padding: 14px 40px; font-size: 0.75rem; text-transform: uppercase; font-weight: 800; cursor: pointer; border-radius: 6px; }
-        .primary { background: var(--amber); border: none; }
-        .secondary { background: transparent; color: #fff; border: 1px solid #fff; }
-
-        .page-content { display: none; }
-        .page-content.active { display: block; }
-    </style>
-</head>
-<body>
-
-    <aside>
-        <div class="nav-item active" onclick="showPage('main-page', this)">Main</div>
-        <div class="nav-item" onclick="showPage('library', this)">Library</div>
-    </aside>
-
-    <div class="app-container">
-        <header>MILES_VAULT</header>
-
-        <main>
-            <div class="status-row">
-                <div class="status-box"><div class="label">System</div><div class="value">ONLINE</div></div>
-                <div class="status-box"><div class="label">Ping</div><div class="value" id="ping">14ms</div></div>
-            </div>
-
-            <section id="main-page" class="page-content active">
-                <h2>NEW GAMES</h2>
-                <div class="game-grid">
-                    <div class="game-card" onclick="openLauncher('Eaglercraft 1.8', 'Game%20Code.xml')">
-                        <div class="card-img" style="background-image: url('Minecraft%20photo.png');"></div>
-                        <div class="card-info"><h3>Eaglercraft 1.8</h3></div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="library" class="page-content">
-                <h2>ALL GAMES</h2>
-                <div class="game-grid">
-                    <div class="game-card" onclick="openLauncher('Eaglercraft 1.8', 'Game%20Code.xml')">
-                        <div class="card-img" style="background-image: url('Minecraft%20photo.png');"></div>
-                        <div class="card-info"><h3>Eaglercraft 1.8</h3></div>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <div id="launcher-overlay">
-        <div class="launch-container">
-            <h1 id="game-title" style="color: #fff;">GAME TITLE</h1>
-            <div class="preview-window"><iframe id="preview-frame"></iframe></div>
-            <div class="btn-row">
-                <button class="launch-btn primary" onclick="goFullscreen()">Fullscreen</button>
-                <button class="launch-btn secondary" onclick="closeLauncher()">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function showPage(pageId, element) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            element.classList.add('active');
-        }
-
-        async function openLauncher(title, file) {
-            document.getElementById('game-title').innerText = title;
-            document.getElementById('launcher-overlay').style.display = 'flex';
-            const frame = document.getElementById('preview-frame');
-            frame.src = "about:blank"; 
-            const response = await fetch(file);
-            const text = await response.text();
-            const doc = frame.contentDocument || frame.contentWindow.document;
-            doc.open(); doc.write(text); doc.close();
-        }
-
-        function closeLauncher() {
-            document.getElementById('preview-frame').src = "about:blank"; 
-            document.getElementById('launcher-overlay').style.display = 'none';
-        }
-
-        function goFullscreen() {
-            const frame = document.getElementById('preview-frame');
-            if (frame.requestFullscreen) frame.requestFullscreen();
-        }
-
-        setInterval(() => { document.getElementById('ping').innerText = (Math.floor(Math.random() * 5) + 12) + 'ms'; }, 3000);
-    </script>
-</body>
-</html>
+        .launch-btn { padding: 14px 40px; font-size: 0.75rem; text-transform: uppercase; font-weight:
