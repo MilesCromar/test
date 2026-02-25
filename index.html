@@ -7,80 +7,87 @@
     <style>
         :root {
             --violet: #8b5cf6;
-            --violet-glow: rgba(139, 92, 246, 0.5);
+            --violet-glow: rgba(139, 92, 246, 0.4);
             --bg: #050505;
             --glass: rgba(139, 92, 246, 0.05);
-            --border: rgba(139, 92, 246, 0.2);
+            --border: rgba(139, 92, 246, 0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; }
 
         body {
-            background: radial-gradient(circle at center, #1a1033 0%, var(--bg) 90%);
+            background: radial-gradient(circle at center, #140d26 0%, var(--bg) 95%);
             color: #fff;
             height: 100vh;
             overflow: hidden;
-            opacity: 0;
+            display: flex;
+            flex-direction: column;
+            opacity: 0; /* Initial state for flicker */
         }
 
-        /* Flicker Entrance */
+        /* The Boot Flicker Effect */
         @keyframes boot {
             0% { opacity: 0; }
-            10% { opacity: 0.4; }
+            5% { opacity: 0.2; }
+            7% { opacity: 0; }
+            12% { opacity: 0.6; }
             15% { opacity: 0.1; }
-            20% { opacity: 0.7; }
+            25% { opacity: 1; }
             100% { opacity: 1; }
         }
-        .boot-sequence { animation: boot 0.4s ease-in forwards; }
+        .boot-sequence { animation: boot 0.5s ease-in forwards; }
 
-        /* Navigation */
+        /* Navigation Bar */
         header {
-            padding: 30px 50px;
+            padding: 25px 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid var(--border);
         }
 
-        .nav-links { display: flex; gap: 20px; font-weight: bold; }
-        .nav-item { cursor: pointer; color: #666; transition: 0.3s; text-decoration: none; }
-        .nav-item:hover, .nav-item.active { color: var(--violet); text-shadow: 0 0 10px var(--violet); }
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .brand { color: #fff; font-weight: bold; font-size: 1.2rem; letter-spacing: 3px; margin-right: 20px; }
+        .nav-item { cursor: pointer; color: #555; transition: 0.3s; font-size: 0.9rem; }
+        .nav-item:hover, .nav-item.active { color: var(--violet); text-shadow: 0 0 8px var(--violet-glow); }
 
         /* Glass Status Panels */
         .status-container { display: flex; gap: 15px; }
         .panel {
             background: var(--glass);
             border: 1px solid var(--border);
-            padding: 10px 20px;
-            backdrop-filter: blur(10px);
-            position: relative;
-            min-width: 160px;
+            padding: 10px 18px;
+            backdrop-filter: blur(8px);
+            min-width: 150px;
+            transition: 0.3s;
         }
+        .panel:hover { border-color: var(--violet-glow); }
 
-        .label { display: block; font-size: 0.6rem; color: var(--violet); margin-bottom: 4px; opacity: 0.8; }
+        .label { display: block; font-size: 0.6rem; color: var(--violet); margin-bottom: 4px; opacity: 0.7; font-weight: bold; }
         .val { font-size: 0.8rem; letter-spacing: 1px; }
 
-        /* Panic Box Specifics */
+        /* Panic Interactive Box */
         .panic-controls {
             display: none;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
             margin-top: 10px;
-            border-top: 1px solid var(--border);
             padding-top: 10px;
+            border-top: 1px solid var(--border);
         }
         .panic-btn {
             background: transparent;
             border: 1px solid var(--violet);
             color: var(--violet);
-            font-size: 0.6rem;
-            padding: 5px;
+            font-size: 0.65rem;
+            padding: 4px;
             cursor: pointer;
             text-transform: uppercase;
         }
         .panic-btn:hover { background: var(--violet); color: #fff; }
         .panic-input {
             background: #000;
-            border: 1px solid var(--border);
+            border: 1px solid var(--violet);
             color: var(--violet);
             font-size: 0.7rem;
             padding: 4px;
@@ -88,30 +95,36 @@
             display: none;
         }
 
-        /* Views */
-        .view { display: none; padding: 50px; height: calc(100vh - 150px); overflow-y: auto; }
+        /* Dynamic Views */
+        .view { display: none; padding: 60px 50px; flex: 1; overflow-y: auto; }
         .view.active { display: block; }
 
-        /* Home Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 40px; justify-items: center; }
+        /* Home View (Ghost Cards) */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 40px; 
+            perspective: 1000px;
+        }
         .card {
             width: 220px; height: 220px;
             border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
-            background: transparent;
+            transition: transform 0.1s ease-out, border 0.3s, background 0.3s;
             cursor: pointer;
+            background: transparent;
         }
-        .card:hover { border-color: var(--violet); background: var(--glass); box-shadow: 0 0 20px var(--glass); }
-        .card span { color: var(--border); text-transform: uppercase; transition: 0.3s; }
+        .card:hover { border-color: var(--violet); background: var(--glass); box-shadow: 0 0 25px rgba(139, 92, 246, 0.1); }
+        .card span { color: #333; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; font-size: 0.8rem; }
         .card:hover span { color: var(--violet); text-shadow: 0 0 10px var(--violet); }
 
-        /* Library List */
-        .lib-item {
-            padding: 15px; border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; transition: 0.2s;
+        /* Library View */
+        .lib-row {
+            display: flex; justify-content: space-between;
+            padding: 15px 10px; border-bottom: 1px solid var(--border);
+            font-size: 0.9rem; transition: 0.2s;
         }
-        .lib-item:hover { background: var(--glass); color: var(--violet); }
+        .lib-row:hover { background: var(--glass); color: var(--violet); }
 
     </style>
 </head>
@@ -119,28 +132,28 @@
 
     <header>
         <div class="nav-links">
-            <span style="color:white; margin-right: 15px;">COLD</span>
-            <span class="nav-item active" onclick="showView('home')">// HOME</span>
-            <span class="nav-item" onclick="showView('library')">// LIBRARY</span>
-            <span class="nav-item" onclick="showView('settings')">// SETTINGS</span>
+            <span class="brand">COLD</span>
+            <span class="nav-item active" onclick="switchTab('home')">// HOME</span>
+            <span class="nav-item" onclick="switchTab('library')">// LIBRARY</span>
+            <span class="nav-item" onclick="switchTab('settings')">// SETTINGS</span>
         </div>
 
         <div class="status-container">
             <div class="panel">
-                <span class="label">ACCESS_ID</span>
+                <span class="label">ID</span>
                 <span class="val">ADMIN_MILES</span>
             </div>
             <div class="panel">
                 <span class="label">PING</span>
-                <span class="val" id="ping-val">14MS</span>
+                <span class="val" id="ping">12MS</span>
             </div>
-            <div class="panel" id="panic-box" style="cursor: pointer;">
-                <span class="label">PANIC_SYSTEM</span>
-                <span class="val" id="panic-display">[ESC] -> GOOGLE</span>
-                <div class="panic-controls" id="panic-controls">
-                    <button class="panic-btn" id="rebind-btn">Change Key</button>
-                    <button class="panic-btn" id="dest-btn">Change URL</button>
-                    <input type="text" class="panic-input" id="url-input" placeholder="https://...">
+            <div class="panel" id="panic-panel" style="cursor:pointer;">
+                <span class="label">PANIC_LINK</span>
+                <span class="val" id="panic-stat">[ESC] -> GOOGLE</span>
+                <div class="panic-controls" id="panic-ui">
+                    <button class="panic-btn" onclick="startRebind()">Change Key</button>
+                    <button class="panic-btn" onclick="toggleUrlInput()">Change URL</button>
+                    <input type="text" id="url-field" class="panic-input" placeholder="Enter URL...">
                 </div>
             </div>
         </div>
@@ -148,105 +161,12 @@
 
     <div id="home" class="view active">
         <div class="grid">
-            <div class="card" data-tilt><span>Project_01</span></div>
-            <div class="card" data-tilt><span>Project_02</span></div>
-            <div class="card" data-tilt><span>Project_03</span></div>
+            <div class="card" data-tilt><span>EXTRACT_01</span></div>
+            <div class="card" data-tilt><span>EXTRACT_02</span></div>
+            <div class="card" data-tilt><span>EXTRACT_03</span></div>
         </div>
     </div>
 
     <div id="library" class="view">
-        <h2 style="color: var(--violet); margin-bottom: 20px;">SYSTEM_ARCHIVE</h2>
-        <div class="lib-item"><span>Game_Data_01.bin</span><span>1.2GB</span></div>
-        <div class="lib-item"><span>Game_Data_02.bin</span><span>844MB</span></div>
-        <div class="lib-item"><span>Game_Data_03.bin</span><span>2.1GB</span></div>
-    </div>
-
-    <div id="settings" class="view">
-        <h2 style="color: var(--violet); margin-bottom: 20px;">SYSTEM_CONFIG</h2>
-        <p style="opacity: 0.5;">Settings module loading soon...</p>
-    </div>
-
-    <script>
-        // Init Settings
-        let panicKey = "Escape";
-        let panicURL = "https://www.google.com";
-        let listening = false;
-
-        // Flicker Start
-        window.onload = () => document.getElementById('main-body').classList.add('boot-sequence');
-
-        // Navigation Logic
-        function showView(viewId) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // Live Ping
-        setInterval(() => {
-            document.getElementById('ping-val').innerText = Math.floor(Math.random() * 8 + 10) + "MS";
-        }, 2000);
-
-        // Panic Logic
-        const panicBox = document.getElementById('panic-box');
-        const panicControls = document.getElementById('panic-controls');
-        const rebindBtn = document.getElementById('rebind-btn');
-        const destBtn = document.getElementById('dest-btn');
-        const urlInput = document.getElementById('url-input');
-
-        panicBox.onclick = (e) => {
-            if(e.target === panicBox || e.target.parentElement === panicBox) {
-                panicControls.style.display = panicControls.style.display === 'flex' ? 'none' : 'flex';
-            }
-        };
-
-        rebindBtn.onclick = () => {
-            listening = true;
-            rebindBtn.innerText = "LISTENING...";
-        };
-
-        destBtn.onclick = () => {
-            urlInput.style.display = "block";
-            urlInput.focus();
-        };
-
-        urlInput.onkeypress = (e) => {
-            if(e.key === 'Enter') {
-                panicURL = urlInput.value.startsWith('http') ? urlInput.value : 'https://' + urlInput.value;
-                updatePanicDisplay();
-                urlInput.style.display = "none";
-            }
-        };
-
-        window.onkeydown = (e) => {
-            if(listening) {
-                panicKey = e.key;
-                listening = false;
-                rebindBtn.innerText = "Change Key";
-                updatePanicDisplay();
-                return;
-            }
-            if(e.key === panicKey) {
-                window.location.href = panicURL;
-            }
-        };
-
-        function updatePanicDisplay() {
-            document.getElementById('panic-display').innerText = `[${panicKey.toUpperCase()}] -> ${new URL(panicURL).hostname.toUpperCase()}`;
-        }
-
-        // Magnetic Cards
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.onmousemove = (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) - rect.width/2;
-                const y = (e.clientY - rect.top) - rect.height/2;
-                card.style.transform = `perspective(1000px) rotateX(${-y/10}deg) rotateY(${x/10}deg) scale(1.05)`;
-            };
-            card.onmouseleave = () => card.style.transform = `rotateX(0) rotateY(0) scale(1)`;
-        });
-    </script>
-</body>
-</html>
+        <h3 style="margin-bottom: 30px; color: var(--violet);">// MASTER_INDEX</h3>
+        <div class="lib
